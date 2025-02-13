@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Tracking
+from .models import *
 
 # Create your views here.
 
@@ -18,6 +18,26 @@ def TrackingPage(request):
     tracks = Tracking.objects.all() #objects.filter(name='สมชาย') สามารถใช้ search ได้
     context = {'tracks':tracks}
     return render(request, 'myapp/tracking.html', context)
+
+def Ask(request):
+    if request.method == 'POST':
+        data = request.POST.copy()
+        # print('DATA',data)
+        name = data.get('name') # name = name
+        email = data.get('email')
+        title = data.get('title')
+        detail = data.get('detail')
+        # print(name,email,title,detail)
+
+        new = AskQA()
+        new.name = name
+        new.email = email
+        new.title = title
+        new.detail = detail
+        new.save()
+
+    return render(request, 'myapp/ask.html')
+
 
 
 def Sawatdee(request):

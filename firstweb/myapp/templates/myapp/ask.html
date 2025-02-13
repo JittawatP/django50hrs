@@ -1,0 +1,53 @@
+{% extends 'myapp/base.html' %}
+{% block title %} เว็บแบงค์ - สอบถามปัญหาทางนี้ได้เลย {% endblock title %}
+{% block content %}
+
+    {% comment %} ชื่อผู้ติดต่อ (text) {% endcomment %}
+    {% comment %} email (text) {% endcomment %}
+    {% comment %} หัวข้อ (text) {% endcomment %}
+    {% comment %} รายละเอียด (textarea) {% endcomment %}
+
+    <h2>สอบถามทางนี้ได้เลยครับ</h2><br>
+    <div class="form-group">
+        <form action="" method="POST">
+            {% csrf_token %}  {% comment %} เป็นคำสั่งเพื่อความปลอดภัย {% endcomment %}
+
+            <div class="form-group">
+                <label for="name">ชื่อผู้ติดต่อ</label>
+                <input type="text" class="form-control" id="name" name="name" />
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" id="email" name="email" />
+            </div>
+            <br>
+            {% comment %}
+            <div class="form-group">
+                <label for="title">หัวข้อ</label>
+                <input type="text" class="form-control" id="title" name="title" />
+            </div>
+            {% endcomment %}
+            <div class="form-group">
+                <label for="title">หัวข้อ</label>
+                <select class="form-select" id="title" name="title">
+                    <option>สินค้า</option>
+                    <option>เคลมสินค้า</option>
+                    <option>สอบถามข้อมูลสินค้า</option>
+                    <option>อื่นๆ</option>
+                </select>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="detail">รายละเอียด</label>
+                <textarea class="form-control" name="detail" id="detail" rows="5"></textarea>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <br>
+
+  
+
+{% endblock content %}

@@ -18,3 +18,14 @@ class Product(models.Model):
 
     def __str__(self):
         return '{} {} - {} ({}) - {}'.format(self.productId,self.productName, self.categoryId, self.price,self.detail)
+
+class AskQA(models.Model):
+    name = models.CharField(max_length=100,null=True,blank=True, verbose_name='ชื่อ')
+    email = models.CharField(max_length=100,null=True,blank=True,verbose_name='อีเมล')
+    title = models.CharField(max_length=100,null=True,blank=True,verbose_name='หัวข้อ')
+    detail = models.TextField(null=True,blank=True,verbose_name='รายละเอียด')
+
+    def __str__(self):
+        return '{} - {} ({}) - {}'.format(self.name, self.email, self.title, self.detail)
+
+
