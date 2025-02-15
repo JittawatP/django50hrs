@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import *
+from django.contrib.auth.decorators import login_required #บังคับล็อกอิน
 
 # Create your views here.
 
@@ -38,7 +39,27 @@ def Ask(request):
 
     return render(request, 'myapp/ask.html')
 
+@login_required
+def Questions(request):
+    questions = AskQA.objects.all() 
+    context = {'questions':questions}
+    return render(request, 'myapp/questions.html', context)
 
+@login_required
+def Answer(request,askid):
+    # localhost:8000/answer/askid
+    record = AskQA.objects.get(id=askid)
+
+    if request.method == 'POST':
+        data = request.POST.copy()
+        # askid = data.get('askid')
+        answer = data.get('answer')
+        record.answer = answer
+        record.save()
+
+    context = {'record':record}
+
+    return render(request, 'myapp/answer.html', context)
 
 def Sawatdee(request):
     return HttpResponse('<h1>สวัสดีจ้า</h1>')

@@ -20,10 +20,11 @@ class Product(models.Model):
         return '{} {} - {} ({}) - {}'.format(self.productId,self.productName, self.categoryId, self.price,self.detail)
 
 class AskQA(models.Model):
-    name = models.CharField(max_length=100,null=True,blank=True, verbose_name='ชื่อ')
+    name = models.CharField(max_length=100, verbose_name='ชื่อ')
     email = models.CharField(max_length=100,null=True,blank=True,verbose_name='อีเมล')
     title = models.CharField(max_length=100,null=True,blank=True,verbose_name='หัวข้อ')
     detail = models.TextField(null=True,blank=True,verbose_name='รายละเอียด')
+    answer = models.TextField(null=True,blank=True,verbose_name='ตอบคำถาม')
 
     def __str__(self):
         return '{} - {} ({}) - {}'.format(self.name, self.email, self.title, self.detail)

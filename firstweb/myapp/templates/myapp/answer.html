@@ -1,0 +1,35 @@
+{% extends 'myapp/base.html' %}
+{% block title %} เว็บแบงค์ - ตอบคำถามลูกค้า {% endblock title %}
+{% block content %}
+
+
+    <h2>หน้าสำหรับตอบคำถามลุกค้า</h2><br>
+    <div class="container">
+        <center>
+            <h3>ชื่อผู้ติดต่อ: {{ record.name }} </h3>
+            <h3>email: {{ record.email }}</h3>
+            <h3>หัวข้อ: {{ record.title }}</h3>
+            <hr>
+            <h3>รายละเอียด: {{ record.detail }}</h3>
+            <hr>
+            {% if record.answer %}
+                <h3>ตอบแล้ว</h3>
+                <p>{{ record.answer }}</p>
+            {% endif %}
+        </center>
+    </div>
+    <div class="form-group">
+        <form action="" method="POST">
+            {% csrf_token %}  {% comment %} เป็นคำสั่งเพื่อความปลอดภัย {% endcomment %}
+            <input type="hidden" name="askid" id="askid" value="{{record.id}}">
+            <div class="form-group">
+                <label for="answer">ตอบ</label>
+                <textarea class="form-control" name="answer" id="answer" rows="5">{% if record.answer %} {{ record.answer }} {% endif %}</textarea>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <br>
+
+{% endblock content %}
