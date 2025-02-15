@@ -12,6 +12,7 @@ urlpatterns = [
     path('ask', Ask, name='ask'),
     path('questions', Questions, name='questions'),
     path('answer/<int:askid>', Answer , name='answer'),
+    path('blogs', Posts , name='post'),
     path('sawatdee', Sawatdee),
 ]
 

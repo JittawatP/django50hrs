@@ -61,6 +61,14 @@ def Answer(request,askid):
 
     return render(request, 'myapp/answer.html', context)
 
+
+def Posts(request):
+    posts = Post.objects.all()
+
+    centext = {'posts':posts}
+    return render(request, 'myapp/blogs.html',centext)
+
+
 def Sawatdee(request):
     return HttpResponse('<h1>สวัสดีจ้า</h1>')
 

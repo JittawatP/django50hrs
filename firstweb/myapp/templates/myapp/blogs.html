@@ -1,0 +1,33 @@
+{% extends 'myapp/base.html' %}
+{% block title %} เว็บแบงค์ - บทความ {% endblock title %}
+{% block content %}
+  <main role="main">
+      <section class="jumbotron text-center">
+        <div class="container">
+          <div class="album py-5 bg-dark">
+            <div class="container">
+              <div class="row">
+                {% for post in posts %}
+                <div class="col-md-4">
+                  <div class="card mb-4 box-shadow">
+                    <img class="card-img-top" src="{{ post.images.url }}" height="225px" style="object-fit:cover;" alt="Card image cap">
+                    <div class="card-body">
+                      <p class="card-text">{{post.title}}</p>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                          </a><button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                        </div>
+                        <small class="text-muted">{{ post.date_created }}</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section> 
+  </main>
+{% endblock content %}
+
