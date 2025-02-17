@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from .models import *
 from django.contrib.auth.decorators import login_required #บังคับล็อกอิน
@@ -63,11 +63,22 @@ def Answer(request,askid):
 
 
 def Posts(request):
-    posts = Post.objects.all()
+    posts = Post.objects.all().order_by('id').reverse()
 
     centext = {'posts':posts}
     return render(request, 'myapp/blogs.html',centext)
 
+
+def PostDetail(request, slug):
+    posts = Post.objects.all().order_by('id').reverse()[:3]
+    try:
+        single_post = get_object_or_404(Post, slug = slug)
+        print("รายละเอียดบทความ", single_post)
+    except Post.DoesNotExist:
+        return render(request, 'myapp/home.html')
+    
+    context = {"single_post" : single_post,"posts": posts}
+    return render(request, 'myapp/blog-detail.html', context)
 
 def Sawatdee(request):
     return HttpResponse('<h1>สวัสดีจ้า</h1>')

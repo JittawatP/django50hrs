@@ -13,6 +13,7 @@ urlpatterns = [
     path('questions', Questions, name='questions'),
     path('answer/<int:askid>', Answer , name='answer'),
     path('blogs', Posts , name='post'),
+    path('blog/<slug:slug>/', PostDetail , name='post-detail'),
     path('sawatdee', Sawatdee),
 ]
 

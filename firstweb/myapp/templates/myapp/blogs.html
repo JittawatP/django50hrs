@@ -1,4 +1,5 @@
 {% extends 'myapp/base.html' %}
+{% load static %}
 {% block title %} เว็บแบงค์ - บทความ {% endblock title %}
 {% block content %}
   <main role="main">
@@ -10,12 +11,16 @@
                 {% for post in posts %}
                 <div class="col-md-4">
                   <div class="card mb-4 box-shadow">
+                    {% if post.images %}
                     <img class="card-img-top" src="{{ post.images.url }}" height="225px" style="object-fit:cover;" alt="Card image cap">
+                    {% else %}
+                    <img class="card-img-top" src="{% static 'images/00.png' %}" height="225px" style="object-fit:cover;" alt="Card image cap">
+                    {% endif %}
                     <div class="card-body">
                       <p class="card-text">{{post.title}}</p>
                       <div class="d-flex justify-content-between align-items-center">
                         <div class="btn-group">
-                          </a><button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                          <a href="{% url 'post-detail' post.slug %}"><button type="button" class="btn btn-sm btn-outline-secondary">อ่านเพิ่มเติม</button></a>
                         </div>
                         <small class="text-muted">{{ post.date_created }}</small>
                       </div>
