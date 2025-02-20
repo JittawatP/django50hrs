@@ -1,0 +1,36 @@
+{% extends 'myapp/base.html' %}
+{% block title %} เว็บแบงค์ - หน้าเข้าสู่ระบบ {% endblock title %}
+{% block content %}
+    {% if nouser %}
+    <div class="alert alert-warning" role="alert">
+        email ไม่มีในระบบกรุณาสมัครสมาชิก
+    </div>  
+    <center> <a href="{% url 'register' %}"  role="button">สมัครสมาชิกใหม่</a></center>
+    {% endif %}
+
+    {% if wrongpassword %}
+    <div class="alert alert-warning" role="alert">
+        รหัสผ่านผิด กรุณากรอกใหม่อีกครั้งหรือ รีเซ็ตรหัสผ่าน
+    </div>  
+    <center> <a href="#"  role="button">รีเซ็ตรหัสผ่าน</a></center>
+    {% endif %}
+    <h2>หน้าเข้าสู่ระบบ</h2><br>
+    <div class="form-group">
+        <form action="" method="POST">
+            {% csrf_token %}  {% comment %} เป็นคำสั่งเพื่อความปลอดภัย {% endcomment %}
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" />
+            </div>
+
+            <br>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <br>
+{% endblock content %}

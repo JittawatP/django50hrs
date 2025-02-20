@@ -14,7 +14,13 @@ urlpatterns = [
     path('answer/<int:askid>', Answer , name='answer'),
     path('blogs', Posts , name='post'),
     path('blog/<slug:slug>/', PostDetail , name='post-detail'),
+    #Register and Login
+    path('register', Register , name='register'),
+    path('login', Login , name='login'),
+    #products
+    path('products', AllProduct , name='all-product'),
     path('sawatdee', Sawatdee),
+    
 ]
 
 

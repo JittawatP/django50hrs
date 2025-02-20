@@ -13,3 +13,11 @@ admin.site.register(Post, PostAdmin)
 admin.site.register(Tracking)
 admin.site.register(Product)
 admin.site.register(AskQA)
+
+class ProductAdmin(SummernoteModelAdmin):
+    summernote_fields = ("detail",)
+    list_display = ['id', 'name', 'available']
+    list_editable = ['name']
+admin.site.register(ProductName, ProductAdmin)
+
+admin.site.register(Category)

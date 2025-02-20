@@ -1,0 +1,47 @@
+{% extends 'myapp/base.html' %}
+{% block title %} เว็บแบงค์ - หน้าสมัครสมาชิก {% endblock title %}
+{% block content %}
+
+    {% if success == 'success' %}
+    <div class="alert alert-success" role="alert">
+        คุณได้สมัครสมาชิกเรียบร้อยแล้ว
+    </div>
+    {% else %}
+            {% if usertaken %}
+            <div class="alert alert-warning" role="alert">
+                email ถูกใช้งานแล้ว กรุณากรอก email ใหม่
+            </div>
+            <center> กรุณาล็อกอินตามช่องทางนี้ หรือ ลืมพาสเวิร์ด </center>
+            {% endif %}
+    <br>
+    <h2>สมัครสมาชิกหน้านี้ได้เลย</h2><br>
+    <div class="form-group">
+        <form action="" method="POST">
+            {% csrf_token %}  {% comment %} เป็นคำสั่งเพื่อความปลอดภัย {% endcomment %}
+
+            <div class="form-group">
+                <label for="name">ชื่อ-สกุล</label>
+                <input type="text" class="form-control" id="name" name="name" required />
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required/>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required />
+            </div>
+
+            <br>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    {% endif %}
+
+
+
+  
+
+{% endblock content %}

@@ -1,7 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from .models import *
 from django.contrib.auth.decorators import login_required #บังคับล็อกอิน
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 
 # Create your views here.
 
@@ -79,6 +81,63 @@ def PostDetail(request, slug):
     
     context = {"single_post" : single_post,"posts": posts}
     return render(request, 'myapp/blog-detail.html', context)
+
+def Register(request):
+    context = {}
+    if request.method == 'POST':
+        data = request.POST.copy()
+        # print('DATA',data)
+        name = data.get('name') # name = name
+        email = data.get('email')
+        password = data.get('password')
+
+        check = User.objects.filter(username=email)
+        # print('Check:', check)
+        # print('Len', len(check))
+        if len(check) == 0 :
+            newuser = User()
+            newuser.username = email
+            newuser.first_name = name
+            newuser.set_password(password)
+            newuser.save()
+            context['success'] = 'success'
+        else:
+            context['usertaken'] = 'usertaken'
+
+        
+
+    return render(request, 'myapp/register.html', context)
+  
+def Login(request):
+    context = {}
+    if request.method == 'POST':
+        data = request.POST.copy()
+        # print('DATA',data)
+        name = data.get('name') # name = name
+        email = data.get('email')
+        password = data.get('password')
+
+        check = User.objects.filter(username=email)
+        if len(check) == 0 :
+            context['nouser'] = 'usertaken'
+        else:
+            try:
+                user = authenticate(username=email,password=password)
+                login(request,user)
+                print('login completed')
+                return redirect('questions')
+            except:
+                context['wrongpassword'] = 'wrongpassword'
+                print('<br>fault login')
+
+    return render(request, 'myapp/login.html', context)
+  
+def AllProduct(request):
+    all_product = ProductName.objects.filter(available=True)
+    print("All Product: ", all_product)
+    context = {"all_product": all_product}
+    
+    return render(request,'myapp/all-product.html', context)
 
 def Sawatdee(request):
     return HttpResponse('<h1>สวัสดีจ้า</h1>')
