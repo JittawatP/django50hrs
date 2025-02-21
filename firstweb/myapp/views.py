@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required #บังคับล
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.core.files.storage import FileSystemStorage
+import string
+import random
 
 
 
@@ -170,7 +172,18 @@ def DiscountPage(request):
 
     return render(request, 'myapp/discount.html', context)
 
+def RandomOrderID():
+    ro_id = ""
+    ro_id += random.choice(string.ascii_uppercase)
+    ro_id += random.choice(string.ascii_uppercase)
+
+    for i in range(8):
+        ro_id += random.choice("0123456789")
+
+    return ro_id
+
 def ProductDetail(request, slug):
+    RandomOrderID()
     product = ProductName.objects.get(slug=slug)
     context = {"product":product, "product_price": product.normal_price}
     if product.price1 > 0:
@@ -217,7 +230,50 @@ def ProductDetail(request, slug):
         except:
             new_order.slip = "/default.png"
         new_order.save()
+
+        # เพิ่่ม function random id
+        try:
+            tracking_id = TrackingOrderID.objects.all()  # ดึงข้อมูลทั้งหมดจากโมเดล TrackingOrderID
+            while True:  # เริ่มลูปไม่รู้จบ
+                order_ID = RandomOrderID()  # สร้าง random ID ใหม่โดยใช้ฟังก์ชัน RandomOrderID()
+                for tid in tracking_id:  # วนลูปเพื่อเช็คทุกตัวที่มีใน tracking_id
+                    if order_ID == tid.order_id:  # ถ้า order_ID ที่สร้างมาแล้วซ้ำกับ order_id ในฐานข้อมูล
+                        continue  # ข้ามการทำงานในรอบนี้ (กลับไปเริ่มต้นการวนลูปใหม่)
+                break  # ถ้าไม่ซ้ำ ก็จะออกจากลูป
+        except:
+            order_ID = RandomOrderID()  # หากเกิดข้อผิดพลาด (เช่น ไม่มีข้อมูลใน TrackingOrderID) ให้สร้าง order_ID ใหม่
+        
+        new_tracking_id = TrackingOrderID()
+        new_tracking_id.tracking_order = new_order
+        new_tracking_id.order_id = order_ID
+        new_tracking_id.save()
+
+        return redirect("tracking-order-id-page", order_ID)
+
     return render(request,'myapp/product-detail.html', context)
+
+def TrackingOrderId(request, tid):
+    tracking_id = TrackingOrderID.objects.get(order_id=tid).tracking_order
+    buyer_price = tracking_id.buyer_price
+
+    if buyer_price == int(buyer_price):
+        buyer_price = int(buyer_price) 
+
+    shipping_cost = tracking_id.shipping_cost
+    if shipping_cost == int(shipping_cost):
+        shipping_cost = int(shipping_cost)
+
+    all_price = tracking_id.buyer_price + tracking_id.shipping_cost
+    context = {
+        "tracking_id":tracking_id,
+        "buyer_price":buyer_price,
+        "order_id":tid,
+        "shipping_cost":shipping_cost,
+        "all_price":all_price
+        }
+    
+    return render(request,'myapp/tracking-order.html', context)
+
 
 
 

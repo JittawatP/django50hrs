@@ -92,10 +92,19 @@ class Order(models.Model):
     buyer_price = models.FloatField(default=0)
     shipping_cost = models.FloatField(default=0)
     slip = models.ImageField(upload_to="prodcut-slip/")
+    # เพิม field
+    tracking_number = models.CharField(max_length=100, null=True, blank=True)
+    not_complete = models.BooleanField(default=False)
 
     def __str__(self):
         return self.first_name
+# สร้าง Class Tracking Order
+class TrackingOrderID(models.Model):
+    tracking_order = models.ForeignKey(Order,on_delete=models.CASCADE, related_name="order_id")
+    order_id = models.CharField(max_length=10)
 
+    def __str__(self):
+        return self.order_id
 
 
 
