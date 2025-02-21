@@ -1,0 +1,30 @@
+{% extends 'myapp/base.html' %}
+{% block title %} เว็บแบงค์ - หน้าสมัครสมาชิก {% endblock title %}
+{% block content %}
+
+    <h2>กรุณายอมรับเงื่อนไขสำหรับ "ส่วนลดพิเศษ"</h2><br>
+    <div class="container">
+        <pre style="text-align: left;">
+            1. คุณต้องเป็นสมาชิกของเว็บไซต์เท่านั้น
+            2. คุณต้องเป็นสมาชิกอย่างน้อย 30 วัน
+            3. คุณต้องไม่ได้อยู่ในสถานะแบล็กลิสต์ของเว็บไซต์
+            4. ส่วนลดนี้จะสามารถใช้ได้ภายใน 90 วันหลังจากยอมรับเงื่อนไข
+            5. ใช้ลดได้เฉพาะประเภทสินค้าเท่านั้น ไม่รวมคอร์สออนไลน์
+        </pre>
+    </div>
+    <div class="form-group">
+        <form action="" method="POST">
+            {% csrf_token %}  {% comment %} เป็นคำสั่งเพื่อความปลอดภัย {% endcomment %}
+
+            <div class="">
+                <input class="form-check-input" type="checkbox" value="check-true" id="discount" name="discount">
+                <label class="form-check-label" for="discount">
+                  ยอมรับเงื่อนไข
+                </label>
+              </div>
+              <br>
+            <button type="submit" class="btn btn-primary">ยืนยันข้อตกลง</button>
+        </form>
+    </div>
+
+{% endblock content %}

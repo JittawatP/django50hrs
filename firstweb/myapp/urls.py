@@ -19,6 +19,7 @@ urlpatterns = [
     path('login', Login , name='login'),
     #products
     path('products', AllProduct , name='all-product'),
+    path('discount', DiscountPage , name='discount'),
     path('sawatdee', Sawatdee),
     
 ]

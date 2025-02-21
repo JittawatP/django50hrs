@@ -1,5 +1,6 @@
 from django.db import models
 from taggit.managers import TaggableManager
+from django.contrib.auth.models import User
 
 class Tracking(models.Model):
     name = models.CharField(max_length=100)
@@ -73,6 +74,24 @@ class ProductName(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     slug = models.SlugField(unique=True, max_length=100, null=True, blank=True)
 
-    def __str__(self):
+    def __str__(self): 
         return self.name
 
+class Profile(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='profile_photo',null=True,blank=True)
+    usertype = models.CharField(max_length=100,default='member')
+    interestin = models.CharField(max_length=100,null=True,blank=True)
+    facebook = models.CharField(max_length=100,default='No Facebook')
+    address = models.TextField(null=True,blank=True)
+    tel = models.CharField(max_length=100,null=True,blank=True)
+
+    def __str__(self):
+        return self.user.username
+    
+class Discount(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    percent = models.IntegerField(null=True,blank=True,default=10)
+    active = models.BooleanField(default=False)
+
+    

@@ -100,6 +100,10 @@ def Register(request):
             newuser.first_name = name
             newuser.set_password(password)
             newuser.save()
+
+            newprofile = Profile()
+            newprofile.user = newuser
+            newprofile.save()
             context['success'] = 'success'
         else:
             context['usertaken'] = 'usertaken'
@@ -136,8 +140,33 @@ def AllProduct(request):
     all_product = ProductName.objects.filter(available=True)
     print("All Product: ", all_product)
     context = {"all_product": all_product}
-    
+
     return render(request,'myapp/all-product.html', context)
+
+def DiscountPage(request):
+    if request.user.discount.active == True:
+       return redirect('all-product')
+
+    context = {}
+    if request.method == 'POST':
+        data = request.POST.copy()
+        # print('DATA',data)
+        check = data.get('discount') 
+        print("CHECK:", check)
+        if check == 'check-true':
+            user = User.objects.get(username=request.user.username)
+            # เขียนแบบสองบรรทัดนี้ก็ได้
+            # user.discount.active = True 
+            # user.discount.save()
+            discount = Discount.objects.get(user=user)
+            discount.active = True
+            discount.save()
+            
+
+            return redirect('all-product') # path('products', AllProduct , name='all-product'),
+
+    return render(request, 'myapp/discount.html', context)
+
 
 def Sawatdee(request):
     return HttpResponse('<h1>สวัสดีจ้า</h1>')

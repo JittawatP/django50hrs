@@ -1,38 +1,45 @@
 {% extends 'myapp/base.html' %}
 {% block title %} เว็บแบงค์ - สินค้า {% endblock title %}
 {% block content %}
+  {% if user.is_authenticated and user.profile.usertype == 'vip' and user.discount.active == False %}
+  <br><br>
+  <div class="container">
+    <div class="alert alert-primary" role="alert">
+      คุณได้รับ <a href="{% url 'discount' %}" class="alert-link">ส่วนลดพิเศษ</a> ลด 10%
+    </div>
+  </div>
+  {% endif %}
 
-<div class="pricing-header p-3 pb-md-4 mx-auto text-center">
-  <h1 class="display-4 fw-normal text-body-white">สินค้าทั้งหมด</h1>
-  <p class="fs-5 text-body-white">ร้านขายของแบงค์</p>
-</div>
+
+  <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+    <h1 class="display-4 fw-normal text-body-white">สินค้าทั้งหมด</h1>
+    <p class="fs-5 text-body-white">ร้านขายของแบงค์</p>
+  </div>
 
 
-    <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
-    {% for product in all_product %}
-      <div class="col">
-        <div class="card mb-4 rounded-3 shadow-sm">
-          <div class="card-header py-3">
-          {% if product.images %}
-           <img src="{{ product.images.url }}" alt="" class="bd-placeholder-img card-img-top" width="100%" height="225px" style="object-fit: cover;">
-          {% endif %}
-          </div>
-          <div class="card-body">
-            <h5 class="card-title pricing-card-title">ราคา: {{ product.price }}<small class="text-muted fw-light"> THB</small></h5>
-            <ul class="list-unstyled mt-3 mb-4">
-              <li>{{ product.name }}</li>
-              <li>หมวดหมู่: {{ product.category.category_name}} </li>
-              <li>จำนวน: {{ product.quantity}}  <small class="text-muted fw-light"> {{ product.unit }}</small></li>
-            </ul>
-            <button type="button" class="w-100 btn btn-lg btn-primary">สั่งซื้อ</button>
+      <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+      {% for product in all_product %}
+        <div class="col">
+          <div class="card mb-4 rounded-3 shadow-sm">
+            <div class="card-header py-3">
+            {% if product.images %}
+            <img src="{{ product.images.url }}" alt="" class="bd-placeholder-img card-img-top" width="100%" height="225px" style="object-fit: cover;">
+            {% endif %}
+            </div>
+            <div class="card-body">
+              <h5 class="card-title pricing-card-title">ราคา: {{ product.price }}<small class="text-muted fw-light"> THB</small></h5>
+              <ul class="list-unstyled mt-3 mb-4">
+                <li>{{ product.name }}</li>
+                <li>หมวดหมู่: {{ product.category.category_name}} </li>
+                <li>จำนวน: {{ product.quantity}}  <small class="text-muted fw-light"> {{ product.unit }}</small></li>
+              </ul>
+              <button type="button" class="w-100 btn btn-lg btn-primary">สั่งซื้อ</button>
+            </div>
           </div>
         </div>
-      </div>
-    {% endfor %}
+      {% endfor %}
 
     
     </div>
-{{product.name}}
-{{product.detail}}
 
 {% endblock content %}
