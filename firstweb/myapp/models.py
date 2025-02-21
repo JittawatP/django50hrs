@@ -63,8 +63,12 @@ class Category(models.Model):
 class ProductName(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=255)
+    introduction = models.TextField(null=True,blank=True)
     detail = models.TextField(null=True,blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    normal_price = models.IntegerField(null=True,blank=True)
+    price1 = models.IntegerField(null=True,blank=True)
+    price2 = models.IntegerField(null=True,blank=True)
+    shipping_cost = models.IntegerField(null=True,blank=True,default=40)
     images = models.ImageField(upload_to="product", null=True, blank=True)
     quantity = models.IntegerField(default=1)
     available = models.BooleanField(default=True)
@@ -76,6 +80,24 @@ class ProductName(models.Model):
 
     def __str__(self): 
         return self.name
+
+class Order(models.Model):
+    products = models.ForeignKey(ProductName, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    tel = models.CharField(max_length=20)
+    email = models.CharField(max_length=50)
+    address = models.TextField()
+    count = models.IntegerField(default=1)
+    buyer_price = models.FloatField(default=0)
+    shipping_cost = models.FloatField(default=0)
+    slip = models.ImageField(upload_to="prodcut-slip/")
+
+    def __str__(self):
+        return self.first_name
+
+
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
@@ -93,5 +115,7 @@ class Discount(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     percent = models.IntegerField(null=True,blank=True,default=10)
     active = models.BooleanField(default=False)
+
+
 
     

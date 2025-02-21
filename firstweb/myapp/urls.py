@@ -20,6 +20,8 @@ urlpatterns = [
     #products
     path('products', AllProduct , name='all-product'),
     path('discount', DiscountPage , name='discount'),
+    path('product/<slug:slug>', ProductDetail , name='product-detail'),
+
     path('sawatdee', Sawatdee),
     
 ]

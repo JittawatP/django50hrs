@@ -21,6 +21,7 @@ class ProductAdmin(SummernoteModelAdmin):
 admin.site.register(ProductName, ProductAdmin)
 
 admin.site.register(Category)
+admin.site.register(Order)
 
 class UserProfile(SummernoteModelAdmin):
     list_display = ['id','user','usertype']

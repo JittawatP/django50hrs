@@ -4,6 +4,9 @@ from .models import *
 from django.contrib.auth.decorators import login_required #บังคับล็อกอิน
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.core.files.storage import FileSystemStorage
+
+
 
 # Create your views here.
 
@@ -166,6 +169,56 @@ def DiscountPage(request):
             return redirect('all-product') # path('products', AllProduct , name='all-product'),
 
     return render(request, 'myapp/discount.html', context)
+
+def ProductDetail(request, slug):
+    product = ProductName.objects.get(slug=slug)
+    context = {"product":product, "product_price": product.normal_price}
+    if product.price1 > 0:
+        price_1 = (product.price1*100)/product.normal_price
+
+        context["price_1"] = 100 - int(price_1)
+        context["product_price"] = product.price1
+    
+    if product.price2 > 0:
+        price_2 = (product.price2*100) / product.normal_price
+
+        context["price_2"] = 100 - int(price_2)
+    
+    if request.method == "POST":
+        data = request.POST.copy()
+
+        new_order = Order()
+        new_order.products = product
+        new_order.first_name = data.get("first_name")
+        new_order.last_name = data.get("last_name")
+        new_order.tel = data.get("tel")
+        new_order.email = data.get("email")
+        new_order.address = data.get("address")
+        new_order.count = data.get("count")
+        new_order.buyer_price = data.get("buyer_price")
+        new_order.shipping_cost = data.get("shipping_cost")
+
+
+        # file_image = request.FILES.get("upload_slip")  
+        # ถ้าใส่ .get() จะไม่ติด error เนื่องจากถ้าไม่มีข้อมู,จะคืนค่า None
+        try :
+            file_image = request.FILES["upload_slip"]
+            file_image_name = request.FILES["upload_slip"].name.replace(" ","")
+            file_system_storage = FileSystemStorage()
+            file_name = file_system_storage.save("product-slip/" + file_image_name, file_image)
+            upload_file_url = "product-slip/" + file_image_name 
+            # file_system_storage.url(file_name) ถ้าทำแบบนี้จะติด /media/ มาด้วย
+            # ถ้าเขียนแบบด้านบนบรรทัดที่รับต้อง
+            # new_order.slip = upload_file_url["6:"] ก็คือเอาตำแหน่งที่ 6 เป็นต้นไป /media/
+            new_order.slip = upload_file_url
+            # print("file_image_name: ",file_image_name)
+            # print("file_name: ",file_name)
+            # print("upload_file_url",upload_file_url)
+        except:
+            new_order.slip = "/default.png"
+        new_order.save()
+    return render(request,'myapp/product-detail.html', context)
+
 
 
 def Sawatdee(request):
