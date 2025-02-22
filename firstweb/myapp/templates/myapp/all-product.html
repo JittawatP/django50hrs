@@ -33,7 +33,16 @@
                 <li>หมวดหมู่: {{ product.category.category_name}} </li>
                 <li>จำนวน: {{ product.quantity}}  <small class="text-muted fw-light"> {{ product.unit }}</small></li>
               </ul>
-              <a href="{% url 'product-detail' product.slug %}"><button type="button" class="w-100 btn btn-lg btn-primary">สั่งซื้อ</button></a>
+              <!-- EP17 -->
+              <div class="text-end">
+                {% if user.is_authenticated and user.profile.usertype in 'member,vip' %}
+                <a href="{% url 'add-to-cart' product.id %}"><button type="button" class="btn btn-sm btn-outline-primary">เพิ่มไปยังรถเข็น</button></a>
+                <a href="{% url 'product-detail' product.slug %}"><button type="button" class="btn btn-sm btn-primary">สั่งซื้อ</button></a>
+                {% else %}
+                <a href="{% url 'login' %}"><button type="button" class="btn btn-sm btn-danger">ไปที่หน้าล็อกอิน</button></a>
+                {% endif %}
+              <!-- End EP17 -->
+              </div>
             </div>
           </div>
         </div>

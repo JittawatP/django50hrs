@@ -35,4 +35,19 @@ admin.site.register(Category)
 class UserProfile(SummernoteModelAdmin):
     list_display = ['id','user','usertype']
 admin.site.register(Profile, UserProfile)
+
 admin.site.register(Discount)
+
+class CartAdmin(SummernoteModelAdmin):
+    list_display = ['product_name']
+admin.site.register(Cart, CartAdmin)
+
+class OrderProductAdmin(admin.ModelAdmin):
+    list_display = ['product_name']
+admin.site.register(OrderProduct, OrderProductAdmin)
+
+class CartOrderAdmin(admin.ModelAdmin):
+    list_display = ['user', 'first_name', 'last_name']
+admin.site.register(CartOrder, CartOrderAdmin)
+
+

@@ -164,7 +164,7 @@
     </div>
 
     
-<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+<div class="container d-flex w-100 h-100 p-3 mx-auto flex-column">
   <header class="mb-auto">
     <div>
       <h5 class="float-md-start mb-0">Bank Shop</h5>
@@ -175,6 +175,11 @@
         <a class="nav-link fw-bold py-1 px-0" href="{% url 'all-product' %}">สินค้า</a>
         <a class="nav-link fw-bold py-1 px-0" href="{% url 'post' %}">บทความ</a>
         <a class="nav-link fw-bold py-1 px-0" href="{% url 'tracking' %}">tracking</a>
+        <!-- EP17 -->
+        {% if user.is_authenticated and user.profile.usertype in 'member,vip' %}
+        <a class="nav-link fw-bold py-1 px-0" href="{% url 'my-cart' %}">ตะกร้าสินค้า <span class="badge bg-primary"><font color="white">{{ user.profile.cart_quantity }}</font></span></a>
+        {% endif %}
+        <!-- End EP17 -->
         <a class="nav-link fw-bold py-1 px-0" href="{% url 'about-us' %}">เกี่ยวกับเรา</a>
         <a class="nav-link fw-bold py-1 px-0" href="{% url 'contact' %}">ติดต่อเรา</a>
         <a class="nav-link fw-bold py-1 px-0" href="{% url 'ask' %}">สอบถาม</a>

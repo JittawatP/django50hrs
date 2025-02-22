@@ -116,9 +116,73 @@ class Profile(models.Model):
     facebook = models.CharField(max_length=100,default='No Facebook')
     address = models.TextField(null=True,blank=True)
     tel = models.CharField(max_length=100,null=True,blank=True)
+    # EP17 
+    cart_quantity = models.IntegerField(default=0, null=True, blank=True)
+    # End EP17
 
     def __str__(self):
         return self.user.username
+
+class OrderProduct(models.Model):
+    order_id = models.CharField(max_length=100, null=True, blank=True)
+    product_id = models.CharField(max_length=100, null=True,blank=True)
+    product_name = models.CharField(max_length=100, null=True, blank=True)
+    price = models.IntegerField(null=True, blank=True)
+    quantity = models.IntegerField(null=True, blank=True)
+    total = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.product_name
+    
+class Cart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product_id = models.CharField(max_length=100, null=True, blank=True)
+    product_name = models.CharField(max_length=100, null=True, blank=True)
+    price = models.IntegerField(null=True, blank=True)
+    quantity = models.IntegerField(null=True, blank=True)
+    stamp = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    total = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return self.product_name
+    
+class CartOrder(models.Model):
+    order_id = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100, null=True, blank=True)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
+    tel = models.CharField(max_length=14)
+    email = models.CharField(max_length=50, null=True, blank=True)
+    address = models.TextField()
+    express = models.CharField(max_length=100)
+    payment = models.CharField(max_length=100)
+    other = models.TextField(null=True, blank=True)
+    stamp = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    paid = models.BooleanField(default=False)
+    confirm = models.BooleanField(default=False)
+    slip = models.ImageField(upload_to="cart-slip/", null=True, blank=True)
+    slip_time = models.DateField(null=True, blank=True)
+    bank_account = models.CharField(
+        max_length=50,
+        choices= [
+            ('KBank', 'KBank'),
+            ('SCB', 'SCB'),
+            ('TTB', 'TTB'),
+            ('KTB', 'KTB'),
+            ('BBL', 'BBL'),
+            ('BAY', 'BAY'),
+            ('อื่น', 'อื่น')
+        ],
+        default='KBank'
+    )
+    payment_id = models.CharField(max_length=100, null=True, blank=True)
+    tracking_number = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return self.order_id
+
+
+
     
 class Discount(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
