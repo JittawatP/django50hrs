@@ -27,6 +27,10 @@ urlpatterns = [
     path('add-cart/<str:pid>', AddToCart, name='add-to-cart'),
     path('cart/', MyCart , name='my-cart'),
     # End EP17
+    # EP18
+    path('edit-cart/', MyCartEdit , name='my-cart-edit'),
+    path('checkout/', Checkout , name='checkout'),
+    # End EP18
     
 ]
 

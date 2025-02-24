@@ -1,0 +1,80 @@
+{% extends 'myapp/base.html' %}
+
+{% load static %}
+
+<!-- การใส่ comma ใน html line -->
+{% load humanize %} 
+
+{% block title %} เว็บลุงขายสินค้า - รายละเอียดสินค้า {% endblock title %}
+
+{% block content %}
+
+{% if status == 'delete' %}
+<div class="alert alert-danger">
+    <strong>ลบรายการสำเร็จ! </strong> หากต้องการทำการสั่งซื้อใหม่ กรุณาติดต่อ Admin
+</div>
+{% endif %}
+
+
+<br />
+
+
+<div class="container">
+    <div class="text-color">
+        <h3>ตะกร้าสินค้า</h3>
+    </div>
+    <div style="padding: 5px"></div>
+    <form method="POST" id="formsave">
+        {% csrf_token %}
+        <table class="table">
+            <tr>
+                <th>ไอดี</th>
+                <th>ชื่อสินค้า</th>
+                <th>ราคา</th>
+                <th>จำนวน</th>
+            </tr>
+            {% for mc in mycart %}
+            <tr>
+                <td>{{mc.product_id}}</td>
+                <td>{{mc.product_name}}</td>
+                <td>{{mc.price}}</td>
+                <td>
+                    <input type="text" name="pd_{{mc.product_id}}" value="{{mc.quantity}}" />
+                </td>
+            </tr>
+            {% endfor %}
+
+
+        </table>
+        <div style="padding: 5px"></div>
+        <input type="hidden" name="checksave" value="checksave"/>
+    </form>
+
+
+    <div class="row text-left">
+        <div style="padding: 8px"></div>
+       
+        <!-- ปุ่ม "จัดเก็บ" -->
+        <form method="POST" action="submit_save_form_url_here"> <!-- กำหนด action ให้ถูกต้อง -->
+            <button type="submit" form="formsave" class="btn btn-outline-primary btn-sm" style="width: auto">
+                จัดเก็บ
+            </button>
+        </form>
+
+
+        <div style="padding: 10px"></div>
+       
+        <!-- ปุ่ม "ลบทั้งหมด" -->
+        <form id="formclear" method="POST" onsubmit="return confirm('กดยืนยันเพื่อลบสินค้าทั้งหมด หรือ ยกเลิก')">
+            {% csrf_token %}
+            <input type="hidden" name="clear" value="clear" />
+            <button type="submit" name="formclear" class="btn btn-outline-danger btn-sm" style="width: auto">
+                ลบทั้งหมด
+            </button>
+        </form>
+    </div>
+    <div style="padding: 20px"></div>
+</div>
+
+
+{% endblock content %}
