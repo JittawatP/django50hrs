@@ -31,6 +31,17 @@ urlpatterns = [
     path('edit-cart/', MyCartEdit , name='my-cart-edit'),
     path('checkout/', Checkout , name='checkout'),
     # End EP18
+    # EP19
+    path('orders/', CartOrderProduct , name='cart-order-product'),
+    path('upload-slip/<str:order_id>/', UploadSlipOrder , name='upload-slip-order'),
+    path('customer-all-order/', CustomerAllOrder , name='-ordcustomer-aller'),  
+    path('update-status/<str:order_id>/<str:status>/', UpdatePaid , name='update-status'),  
+    path('update-tracking/<str:order_id>/', CartOrderUpdateTracking , name='cart-order-update-tracking'),      
+    path('my-order/<str:order_id>/', MyOrder , name='my-order'),      
+
+    # End EP19
+
+
     
 ]
 
