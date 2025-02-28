@@ -51,3 +51,14 @@ class CartOrderAdmin(admin.ModelAdmin):
 admin.site.register(CartOrder, CartOrderAdmin)
 
 
+class MachineAdmin(admin.ModelAdmin):
+    list_display = ['name', 'model', 'year']
+admin.site.register(Machine, MachineAdmin)
+
+class ReservationAdmin(admin.ModelAdmin):
+    list_display = ['customer_name', 'tel', 'email']
+admin.site.register(Reservation, ReservationAdmin)
+
+class CommentsAdmin(admin.ModelAdmin):
+    list_display = ['content', 'name', 'email']
+admin.site.register(Comments, CommentsAdmin)
