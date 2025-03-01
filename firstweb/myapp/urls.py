@@ -39,10 +39,14 @@ urlpatterns = [
     path('update-tracking/<str:order_id>/', CartOrderUpdateTracking , name='cart-order-update-tracking'),      
     path('my-order/<str:order_id>/', MyOrder , name='my-order'),      
     # End EP19
-    # EP20 Rental
+    # EP20 Rental 1
     path('machines/', AllMachine , name='all-machines-page'), 
     path('machine/<int:machine_id>/', MachineDetail , name='machine-detail-page'),          
     # End EP20
+    # EP21 Rental 2
+    path('machine/<int:machine_id>/reserve', MakeREservation , name='make-reservation-page'),          
+
+    # End EP21
 
     
 ]

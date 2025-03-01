@@ -24,7 +24,7 @@
     <p>ราคา {{ machine.price_per_day }} ต่อวัน</p>
     <div style="padding-top: 20px"></div>
     <div class="row text-left">
-    <a href="#" class="btn btn-primary btn-sm">ไปที่รายการเช่า</a>
+    <a href="{% url 'make-reservation-page' machine.id %}" class="btn btn-primary btn-sm">ไปที่รายการเช่า</a>
     </div>
     <div style="padding-top: 100px"></div> 
     
