@@ -803,7 +803,7 @@ def MakeREservation(request, machine_id):
             machine.available = False
             machine.save()
 
-            return redirect('all-machine-page')
+            return redirect('all-machines-page')
         except Exception as e:
             context = {"error": f"เกิดข้อผิดพลาดที่ไม่คาดคิด: {e}"}
 
