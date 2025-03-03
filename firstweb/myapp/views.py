@@ -810,6 +810,28 @@ def MakeREservation(request, machine_id):
             return render(request, "myapp/make-reservation-detail.html", context)
     return render(request, "myapp/make-reservation-detail.html", context)
 
+def Wishlists(request):
+    wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+
+    context = {"wishlist": wishlist}
+    return render(request, 'myapp/wishlist.html', context)
+
+def AddtoWishlist(request, product_id):
+    product = get_object_or_404(ProductName, id=product_id)
+    wishlist, created = Wishlist.objects.get_or_create(user=request.user)
+    wishlist_item, created = WishlistItem.objects.get_or_create(
+        wishlist=wishlist,
+        product=product
+    )
+    if not created:
+        wishlist_item.delete()
+    return redirect("all-product")
+
+def RemovefromWishlist(request, item_id):
+    wishlist_item = get_object_or_404(WishlistItem, id=item_id)
+    if wishlist_item.wishlist.user == request.user:
+        wishlist_item.delete()
+    return redirect("wishlist-page")
 # Eend EP21
 
 

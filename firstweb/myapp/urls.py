@@ -45,6 +45,9 @@ urlpatterns = [
     # End EP20
     # EP21 Rental 2
     path('machine/<int:machine_id>/reserve', MakeREservation , name='make-reservation-page'),          
+    path('wishlist/', Wishlists , name='wishlist-page'),  
+    path('wishlist/add/<int:product_id>', AddtoWishlist , name='add-to-wishlist-page'),  
+    path('wishlist/remove/<int:item_id>', RemovefromWishlist , name='remove-from-wishlist-page'),  
 
     # End EP21
 

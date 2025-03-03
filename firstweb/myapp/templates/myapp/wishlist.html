@@ -1,0 +1,67 @@
+{% extends 'myapp/base.html' %}
+{% load static %} 
+{% load humanize %} <!-- การใส่ comma ใน html line -->
+{% block title %} เว็บแบงค์ขายสินค้า - รายละเอียดการเช่า {% endblock title %}
+{% block content %}
+{% if user.is_authenticated and user.profile.usertype == 'vip' and user.discount.active == False %}
+<br><br>
+<div class="container">
+  <div class="alert alert-primary" role="alert">
+    คุณได้รับ <a href="{% url 'discount' %}" class="alert-link">ส่วนลดพิเศษ</a> ลด 10%
+  </div>
+</div>
+{% endif %}
+
+
+<div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+  <h1 class="display-4 fw-normal text-body-white">สินค้าทั้งหมด</h1>
+  <p class="fs-5 text-body-white">ร้านขายของแบงค์</p>
+</div>
+
+{% if wishlist.items.exists %}
+    <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+    {% for item in wishlist.items.all %}
+      <div class="col">
+        <div class="card mb-4 rounded-3 shadow-sm">
+          <div class="card-header py-3">
+          {% if item.product.images %}
+          <img src="{{ item.product.images.url }}" alt="" class="bd-placeholder-img card-img-top" width="100%" height="225px" style="object-fit: cover;">
+          {% endif %}
+          </div>
+          <div class="card-body">
+          {% if user.is_authenticated and user.profile.usertype in 'member,vip'  %}
+            <a class="nav-link fw-bold py-1 px-0" href="{% url 'remove-from-wishlist-page' item.id %}">
+              <span class="badge bg-danger-subtle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                  <path d="M8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                </svg>
+              </span>
+            </a>
+          {% endif %}
+            <h5 class="card-title pricing-card-title">ราคา: {{ item.product.normal_price }}<small class="text-muted fw-light"> THB</small></h5>
+            <ul class="list-unstyled mt-3 mb-4">
+              <li>{{ item.product.name }}</li>
+              <li>หมวดหมู่: {{ item.product.category.category_name}} </li>
+              <li>จำนวน: {{ item.product.quantity}}  <small class="text-muted fw-light"> {{ item.product.unit }}</small></li>
+            </ul>
+            <!-- EP17 -->
+            <div class="text-end">
+              {% if user.is_authenticated and user.profile.usertype in 'member,vip' %}
+              <a href="{% url 'add-to-cart' item.product.id %}"><button type="button" class="btn btn-sm btn-outline-primary">เพิ่มไปยังรถเข็น</button></a>
+              <a href="{% url 'product-detail' item.product.slug %}"><button type="button" class="btn btn-sm btn-primary">สั่งซื้อ</button></a>
+              {% else %}
+              <a href="{% url 'login' %}"><button type="button" class="btn btn-sm btn-danger">ไปที่หน้าล็อกอิน</button></a>
+              {% endif %}
+            <!-- End EP17 -->
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
+  
+  </div>
+{% else %}
+  <p>ไม่มี wishlist</p>
+{% endif %}
+{% endblock content %}
