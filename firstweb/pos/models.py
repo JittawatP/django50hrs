@@ -38,6 +38,7 @@ class Menu(models.Model):
     quantity = models.IntegerField(default=1)
     available = models.BooleanField(default=True)
     images = models.ImageField(upload_to="menu-images/")
+    unit = models.CharField(max_length=20, default="แก้ว")
 
     def __str__(self):
         return self.name
@@ -64,6 +65,9 @@ class OrderMenu(models.Model):
         return f"{self.table.number} {self.menu.name}"
 
 class OrderMenuItem(models.Model):
+    # ถ้า order_menu ไม่เพิ่ม related_name = "order_items"
+    # เวลาจะเรียกย้อนจาก OrderMenu มา OrderMenuItem ต้องใช้ {% order_menu.ordermenuitem_set.all %}
+    # ถ้าใช้ related_name จะเรียก {% order_menu.order_item.all %}   ในหน้า html 
     order_menu = models.ForeignKey(OrderMenu, on_delete=models.CASCADE)
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
     count = models.IntegerField()

@@ -1,0 +1,282 @@
+{% extends 'myapp/base.html' %}
+{% load static %} 
+{% load humanize %} <!-- การใส่ comma ใน html line -->
+{% block title %} เว็บแบงค์ขายสินค้า - จองโต๊ะ {% endblock title %}
+{% block content %}
+<style>
+    /* Courses categories */
+    .category-container {
+        width: 100%;
+        padding: 10px;
+      
+      }
+      
+      .categories {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 10px 0;
+      }
+      
+      .category {
+        background: #3d3e3e;
+        border: 1px solid #000;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.3s, color 0.3s;
+        color: #fff;
+      }
+      
+      .category:hover {
+        background: #000;
+        border: 1px solid #000;
+      }
+      
+      .category.active {
+        background: #000;
+        color: #fff;
+        border-color: #000;
+      }
+      
+      /* Courses categories */
+      .scroll-container {
+        display: flex;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+      }
+      .scroll-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-55%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        border: none;
+        padding: 0.5rem;
+        cursor: pointer;
+        z-index: 10;
+        border-radius: 50px;
+        width: 4%;
+      }
+      .scroll-button:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+        color: #000;
+      }
+  
+        .scroll-button.left {
+            left: 0;
+        }
+        .scroll-button.right {
+            right: 0;
+        }
+</style>
+
+
+
+<div style="padding-top: 100px;"></div>
+<div class="col-12">
+<div class="d-flex relative overflow-x-auto space-x-2 py-2">
+  <button class="btn btn-outline-danger btn-sm text-white rounded-full category-button filter-btn px-2 py-1 focus:outline-none focus:ring-2 focus:ring-red-500" data-category="0">
+    ✨ เมนูทั้งหมด ✨
+  </button>
+  {% for category in all_category  %}
+      <button class="btn btn-outline-danger  btn-sm text-white tab-button filter-btn content-item rounded-full px-2 py-1 focus:outline-none hover:bg-red-500" data-category="{{ category.id }}">
+  {{ category.name }}</button>
+  {% endfor %}
+</div>
+</div>
+<div style="padding-bottom: 20px;"></div>
+<div class="container">
+<form method="post" enctype="multipart/form-data" id="order-form">
+  <div class="row">
+    {% csrf_token %}
+    {% for menu in all_menu %}
+    <div class="col-md-3 course-item" data-category="{{ menu.category.id }}">
+      <div class="card shadow-lg bg-dark rounded text-white">
+        <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+        {% if menu.images %}
+            <img src="{{ menu.images.url }}"  class="img-b img-fluid" loading="lazy" style="height: 200px; width: 100%; object-fit: cover;"/>
+        {% else %}
+            <img src="{% static 'images/hero.png' %}"  class="img-b img-fluid" loading="lazy" />
+        {% endif %}
+        </div>
+        <div class="card-body text-left">
+          <div class="column text-start">
+            <span class="fa fa-tags" aria-hidden="true" style="font-size: 18px; font-weight: bold;"> {{ menu.category.name }} </span>
+          </div>
+
+          <h6 class="card-title" style="font-size: 18px;"> 
+          {{ menu.name }} - <strike class="card-title mb-2 text-white">ปกติ {{ menu.price|floatformat:0 }} บาท</strike>
+          </h6>
+          <span>
+            <h6 class="card-subtitle mb-2 text-danger font-weight-bold" style="font-size: 18px; font-weight: bold;"> 
+              พิเศษ {{ menu.price_discount|floatformat:0 }}บาท
+            
+              <input type="number" class="form-control-sm bg-black text-white menu-count" data-price=" {{ menu.price_discount }}" name="count" value="1" style="width: 100px;" required>
+            </h6>
+          </span>  
+        
+          <input type="checkbox" class="menu-checkbox" name="menu" value="{{ menu.id }}">
+        
+        </div>
+      </div>
+      <br>
+    </div>
+    {% endfor %}
+  </div>
+  <div style="padding-top: 100px;"></div>
+
+  <div class="text-right">
+    <h4>ราคาทั้งหมด: <span id="total-price">0</span> บาท</h4>
+    <h4>VAT (7%): <span id="vat">0</span> บาท</h4>
+    <h4>ราคารวมทั้งหมด (รวมภาษีมูลค่าเพิ่ม): <span id="final-price">0</span> บาท</h4>
+    
+    <!-- Hidden inputs to send the calculated totals -->
+    <input type="hidden" name="total_buyer_price" id="hidden-total-price">
+    <input type="hidden" name="vat" id="hidden-vat">
+    <input type="hidden" name="final_price_with_vat" id="hidden-final-price">
+    
+    <div style="padding-top: 20px;"></div>
+    <button type="submit" class="btn btn-danger btn-sm">ไปที่หน้าสรุปการสั่งซื้อ</button>
+    <div style="padding-top: 100px;"></div>
+  </div>
+</form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const menuCheckboxes = document.querySelectorAll('.menu-checkbox');
+  const menuCounts = document.querySelectorAll('.menu-count');
+  const totalPriceElement = document.getElementById('total-price');
+  const vatElement = document.getElementById('vat');
+  const finalPriceElement = document.getElementById('final-price');
+  
+
+  const hiddenTotalPrice = document.getElementById('hidden-total-price');
+  const hiddenVat = document.getElementById('hidden-vat');
+  const hiddenFinalPrice = document.getElementById('hidden-final-price');
+  
+  function calculateTotal() {
+    let totalPrice = 0;
+
+
+    menuCheckboxes.forEach((checkbox, index) => {
+      if (checkbox.checked) {
+        const count = parseInt(menuCounts[index].value);
+        const price = parseFloat(menuCounts[index].dataset.price);
+        
+        totalPrice += count * price;
+      }
+    });
+
+    const vat = totalPrice * 0.07;
+    const finalPriceWithVat = totalPrice + vat;
+
+
+    totalPriceElement.textContent = totalPrice.toFixed(2);
+    vatElement.textContent = vat.toFixed(2);
+    finalPriceElement.textContent = finalPriceWithVat.toFixed(2);
+
+
+    hiddenTotalPrice.value = totalPrice.toFixed(2);
+    hiddenVat.value = vat.toFixed(2);
+    hiddenFinalPrice.value = finalPriceWithVat.toFixed(2);
+  }
+
+
+  menuCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener('change', calculateTotal);
+  });
+
+  menuCounts.forEach((input) => {
+    input.addEventListener('input', calculateTotal);
+  });
+
+
+  calculateTotal();
+});
+
+</script>
+
+<script>
+<!-- ฟังก์ชันนี้จะทำงานเมื่อ DOM (Document Object Model) โหลดเสร็จแล้ว หมายความว่าเนื้อหาในหน้าเว็บถูกโหลดครบถ้วนก่อนที่จะเริ่มทำงานโค้ดข้างใน -->
+document.addEventListener('DOMContentLoaded', function () {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const courseItems = document.querySelectorAll('.course-item');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const categoryId = this.getAttribute('data-category');
+
+            courseItems.forEach(item => {
+                if (categoryId == '0' || item.getAttribute('data-category') == categoryId) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const categoryButtons = document.querySelectorAll('.category-button');
+  const contentItems = document.querySelectorAll('.content-item');
+  const scrollContainer = document.querySelector('.scroll-container');
+  const leftButton = document.querySelector('.scroll-button.left');
+  const rightButton = document.querySelector('.scroll-button.right');
+
+  categoryButtons.forEach(button => {
+      button.addEventListener('click', () => {
+          // ลบคลาสที่ใช้งานอยู่จากปุ่มทั้งหมด
+          categoryButtons.forEach(btn => btn.classList.remove('bg-bla-500', 'text-white'));
+          // เพิ่มคลาสที่ใช้งานให้กับปุ่มที่คลิก
+          button.classList.add('bg-red', 'text-white');
+
+          const selectedCategory = button.getAttribute('data-category');
+
+          // แสดงหรือซ่อนรายการตามหมวดหมู่ที่เลือก
+          contentItems.forEach(item => {
+              const itemCategory = item.getAttribute('data-category');
+              if (selectedCategory === '0' || itemCategory === selectedCategory) {
+                  item.classList.remove('hidden');
+              } else {
+                  item.classList.add('hidden');
+              }
+          });
+      });
+  });
+
+  // ทริกเกอร์คลิกที่หมวดหมู่ 'ทั้งหมด' เพื่อแสดงรายการทั้งหมดเมื่อโหลดหน้า
+  document.querySelector('.category-button[data-category="0"]').click();
+
+  // ฟังก์ชันการเลื่อน
+  const scrollAmount = 300; // ปรับจำนวนการเลื่อนตามต้องการ
+
+  leftButton.addEventListener('click', () => {
+      scrollContainer.scrollBy({
+          top: 0,
+          left: -scrollAmount,
+          behavior: 'smooth'
+      });
+  });
+
+  rightButton.addEventListener('click', () => {
+      scrollContainer.scrollBy({
+          top: 0,
+          left: scrollAmount,
+          behavior: 'smooth'
+      });
+  });
+});    
+</script>
+
+
+{% endblock content %}

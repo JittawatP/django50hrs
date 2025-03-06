@@ -1,0 +1,53 @@
+{% extends 'myapp/base.html' %}
+{% load static %} 
+{% load humanize %} <!-- การใส่ comma ใน html line -->
+{% block title %} เว็บแบงค์ขายสินค้า - จองโต๊ะ {% endblock title %}
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<div class="max-w mx-auto p-4 bg-white shadow-lg rounded-lg text-black">
+    <div class="text-center">
+        <h1 class="text-lg-center text-2xl font-bold">Bank Restaurant</h1>
+        <br>
+
+        <div class="flex justify-between">
+            <span class="mr-4"><p>โต๊ะ: {{ order_menu.table }}</p></span>
+            <span class="mr-4"><p>วันที่: {{ order_menu.order_date|date:"d/m/y" }} เวลา: </p></span>
+            <span><p>เวลา: {{ order_menu.order_time }}</p></span>
+        </div>
+        
+        
+    </div>
+    <div class="border-t mt-2 pt-2">
+        <h3 class="text-lg font-bold">วิธีการชำระเงิน</h3>
+        
+    </div>
+
+    <div class="border-t mt-2 pt-2">
+        <h4 class="text-md font-semibold">Scan QR Code ผ่านแอปธนาคาร</h4>
+        <div class="qr-code img-responsive my-4 d-flex justify-content-center align-items-center">
+            <img src="https://promptpay.io/0105561008411/{{ order_menu.final_price_with_vat }}" id="qrcode_frame"  frameborder="0" width="auto" height="auto"/>
+         </div>
+    </div>
+
+    <div class="border-t mt-2 pt-2 text-left">
+        {% for item in order_menu.ordermenuitem_set.all %}
+        <div class="flex justify-between">
+            <p></p>
+            <p>จำนวน: {{ item.count }} {{ item.menu.unit }}</p>
+            <p>ราคา: {{ item.item_total }} บาท</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="border-t mt-2 pt-2 text-left">
+
+        <h3 class="text-lg font-bold">สรุปการสั่งซื้อ</h3>
+        <p>ราคาทั้งหมด: {{ order_menu.total_buyer_price|floatformat:2 }} บาท</p>
+        <p>รวมภาษีมูลค่าเพิ่ม (7%): {{ order_menu.vat|floatformat:2 }} บาท</p>
+        <p><strong>ราคารวมทั้งหมด (รวมภาษีมูลค่าเพิ่ม): {{ order_menu.final_price_with_vat|floatformat:2 }}  บาท</strong></p>
+    </div>
+
+</div>
+
+
+{% endblock content %}
