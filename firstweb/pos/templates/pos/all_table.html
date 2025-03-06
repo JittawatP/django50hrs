@@ -1,0 +1,85 @@
+{% extends 'myapp/base.html' %}
+{% load static %} 
+{% load humanize %} <!-- การใส่ comma ใน html line -->
+{% block title %} เว็บแบงค์ขายสินค้า - จองโต๊ะ {% endblock title %}
+{% block content %}
+
+  <div class="container ">
+    <div class="row">
+        {% for table in all_table %}
+      <div class="col-md-2 course-item m-1 p-4 bg-white shadow-lg rounded-lg text-dark">
+        <div class="text-center">
+            <h1 class="text-lg font-bold small-text" >Bank Origin Restaurant</h1>
+        </div>
+        <div class="border-t mt-2 pt-2">
+          <span><p>โต๊ะ: {{table.number}} </p></span>
+          
+        </div>
+        <div class="border-t mt-2 pt-2">
+          <h3 class="text-lg font-bold">Scan to Order</h3>
+            <p>สะแกนสั่งอาหาร</p>
+            <a href="">
+                {% if table.qr_code %}
+                <div class="qr-code img-responsive my-4 d-flex justify-content-center align-items-center">
+                <img src="{{ table.qr_code.url }}" id="qrcode_frame"  class="img-fluid" />
+              </div>
+              {% else %}
+                <img src="{% static 'images.hero.png' %}" id="qrcode_frame" class="img-fluid" />
+              {% endif %}
+          </a> 
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+    <br>
+</div>
+
+
+
+
+
+
+
+
+<div class="container">
+    <style>
+        .img-fluid {
+            max-width: 100%;
+            height: auto;
+        }
+        .small-text {
+            font-size: 18px; /* Adjust size as needed */
+        }
+    </style>
+    
+    <div class="row">
+        {% for table in all_table %}
+        <div class="col-md-2 course-item m-1 p-4 bg-white shadow-lg rounded-lg text-dark">
+            <div class="text-center">
+                <h1 class="text-lg font-bold small-text">Bank Restaurant</h1>
+            </div>
+            <div class="border-t mt-2 pt-2">
+                <span><p class="small-text">โต๊ะ: {{ table.number }}</p></span>
+            </div>
+            <div class="border-t mt-2 pt-2">
+                <h3 class="text-lg font-bold small-text">Scan to Order</h3>
+                <p class="small-text">สแกนสั่งอาหาร</p>
+                <a href="">
+                    {% if table.qr_code %}
+                    <div class="qr-code img-responsive my-4 d-flex justify-content-center align-items-center">
+                        <img src="{{ table.qr_code.url }}" id="qrcode_frame" class="img-fluid" />
+                    </div>
+                    {% else %}
+                    <img src="{% static 'images/hero.png' %}" id="qrcode_frame" class="img-fluid" />
+                    {% endif %}
+                </a> 
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <br>
+</div>
+
+
+{% endblock content %}
+

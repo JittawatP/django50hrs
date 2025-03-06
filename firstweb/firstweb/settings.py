@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-_jednoh5+xft#i3=aq1-xt5=qm0j88+4#w_1#2rt0oh9pk1te(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'myapp',
+    'pos',
     'django_summernote',
     'taggit',
 ]
@@ -59,7 +60,10 @@ ROOT_URLCONF = 'firstweb.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / 'myapp/templates'],
+        'DIRS': [ 
+            BASE_DIR / 'myapp/templates',
+            BASE_DIR / 'pos/templates',
+                 ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,6 +78,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'firstweb.wsgi.application'
 
+SITE_URL = 'http://192.168.88.125:8000'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -122,8 +127,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATIC_ROOT = BASE_DIR / 'static'
-STATICFILES_DIR = [BASE_DIR / 'static']
+# ถ้า STATIC_ROOT | STATICFILES_DIR ซ้ำกัน จะไม่สามารถใช้ static นี้ตรงตาม path นี้ได้  |  Static ใน appสามารถใช้ได้เลยแม้ไม่ตรงกับ path
+STATIC_ROOT = BASE_DIR / 'static' # ใช้เมื่อรัน collectstatic สำหรับ production
+STATICFILES_DIR = [BASE_DIR / 'static']  # ใช้สำหรับการพัฒนา (development)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
