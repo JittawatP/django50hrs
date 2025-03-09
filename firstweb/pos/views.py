@@ -4,7 +4,10 @@ from .models import *
 from openpyxl import Workbook,load_workbook
 import os
 import pandas as pd
-
+from datetime import timedelta
+from django.utils.timezone import now
+from collections import *
+from django.utils import timezone
 
 # def Sawatdee(request):
 #     return HttpResponse('<h1>สวัสดีจ้า</h1>')
@@ -28,12 +31,19 @@ def OrderMenus(request, table_id):
 
     all_category = Category.objects.all()
     all_menu = Menu.objects.all()
+    # EP24 ทำโปรโมชั่น
+    new_products = Menu.objects.filter(is_new=True).order_by('-id')
+    promotions = Menu.objects.filter(is_promotion=True).order_by('-id')
 
+    current_promotions = Promotion.objects.filter(start_date__lte=now(),end_date__gte=now())
+    # End EP24
     if request.method == "POST":
         data = request.POST.copy()
+        # EP24 เพิ่ม order_date=timezone.now()  อัพเดทเวลาให้เราตอนเราจะไป plot graph
         order_menu = OrderMenu.objects.create(
             table=table,
-            status="pending"
+            status="pending",
+            order_date=timezone.now()
         )
         selected_menu = data.getlist("menu")
         counts = data.getlist("count")
@@ -42,13 +52,20 @@ def OrderMenus(request, table_id):
         items_data = []
 
         for i, menu_id in enumerate(selected_menu):
-            menu = Menu.objects.get(id=menu_id) 
+            # EP24 เพิ่ม if และ try except เพื่อตรวจสอบว่า Menu มี ID นี้ไหม
+            if not menu_id or not str(menu_id).isdigit():
+                continue
+            try:
+                menu = Menu.objects.get(id=menu_id) 
+            except Menu.DoesNotExist:
+                continue
+
+            # End EP24
             count = int(counts[i])
-
             item_total = menu.price_discount * count
-
             total_price += item_total
 
+            # สร้าง OrderMenuItem สำหรับแต่ละเมนูที่สั่ง
             OrderMenuItem.objects.create(
                 order_menu=order_menu,
                 menu=menu,
@@ -63,7 +80,6 @@ def OrderMenus(request, table_id):
                 "ราคา": item_total,
                 "เวลา": order_menu.order_time        
             })
-
         total_price = float(data.get("total_buyer_price"))
         vat =float(data.get("vat"))
         final_price_with_vat = float(data.get("final_price_with_vat"))
@@ -96,7 +112,36 @@ def OrderMenus(request, table_id):
         context = {"order_menu": order_menu}
         return render(request, "pos/sum-order-menu.html",context)
     
-    context = {"table": table, "all_category": all_category, "all_menu": all_menu}
+    context = {"table": table, "all_category": all_category, "all_menu": all_menu,
+               "new_products": new_products, "promotions": promotions, "current_promotions": current_promotions}
+    
     return render(request, "pos/order-menu.html",context)
 
+# EP24 Graph
+def MonthlyOrderSummary(request):
+    now = timezone.now()
+    start_date = now.replace(day=1)
+    end_date = (start_date+timezone.timedelta(days=31)).replace(day=1)
 
+    orders = OrderMenu.objects.filter(order_date__range=(start_date, end_date))
+
+    total_orders = orders.count()   
+    total_sales = sum(order.final_price_with_vat for order in orders)
+
+    daily_sales = defaultdict(float)
+
+    for order in orders:
+        order_date = order.order_date.date()
+        daily_sales[order_date] += order.final_price_with_vat
+
+    labels = list(map(str, daily_sales.keys()))
+    data = list(daily_sales.values())
+
+    context = {
+        "total_orders": total_orders,
+        "total_sales": total_sales,
+        "daily_sales_labels": labels,
+        "daily_sales_data": data
+    }
+    return render(request, "pos/monthly-order-summary.html",context)
+# End EP24

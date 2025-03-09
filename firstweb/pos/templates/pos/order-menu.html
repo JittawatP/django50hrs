@@ -4,75 +4,168 @@
 {% block title %} เว็บแบงค์ขายสินค้า - จองโต๊ะ {% endblock title %}
 {% block content %}
 <style>
-    /* Courses categories */
-    .category-container {
-        width: 100%;
-        padding: 10px;
-      
+  /* Courses categories */
+  .category-container {
+    width: 100%;
+    padding: 10px;
+
+  }
+
+  .categories {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 10px 0;
+  }
+
+  .category {
+    background: #3d3e3e;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.3s, color 0.3s;
+    color: #fff;
+  }
+
+  .category:hover {
+    background: #000;
+    border: 1px solid #000;
+  }
+
+  .category.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+  }
+
+  /* Courses categories */
+  .scroll-container {
+    display: flex;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+  .scroll-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-55%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 50px;
+    width: 4%;
+  }
+  .scroll-button:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+    color: #000;
+  }
+
+    .scroll-button.left {
+        left: 0;
+    }
+    .scroll-button.right {
+        right: 0;
+    }
+
+    .mySlides {
+      display: none;
+    }
+    img {
+      vertical-align: middle;
+    }
+
+    /* Slideshow container */
+    .slideshow-container {
+      position: relative;
+      margin: auto;
+    }
+
+    /* Caption text */
+    .text {
+      color: #f2f2f2;
+      font-size: 15px;
+      padding: 8px 12px;
+      position: absolute;
+      bottom: 8px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Number text (1/3 etc) */
+    .numbertext {
+      color: #f2f2f2;
+      font-size: 12px;
+      padding: 8px 12px;
+      position: absolute;
+      top: 0;
+    }
+
+    /* The dots/bullets/indicators */
+    .dot {
+      height: 15px;
+      width: 15px;
+      margin: 0 2px;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 5s ease;
+    }
+
+    .active {
+      background-color: #717171;
+    }
+
+    /* Fading animation */
+    .fade {
+      animation-name: fade;
+      animation-duration: 5s;
+    }
+
+    @keyframes fade {
+      from {
+        opacity: 0.4;
       }
-      
-      .categories {
-        display: flex;
-        overflow-x: auto;
-        white-space: nowrap;
-        padding: 10px 0;
+      to {
+        opacity: 1;
       }
-      
-      .category {
-        background: #3d3e3e;
-        border: 1px solid #000;
-        border-radius: 5px;
-        padding: 10px 20px;
-        cursor: pointer;
-        white-space: nowrap;
-        transition: background 0.3s, color 0.3s;
-        color: #fff;
-      }
-      
-      .category:hover {
-        background: #000;
-        border: 1px solid #000;
-      }
-      
-      .category.active {
-        background: #000;
-        color: #fff;
-        border-color: #000;
-      }
-      
-      /* Courses categories */
-      .scroll-container {
-        display: flex;
-        overflow-x: hidden;
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-        white-space: nowrap;
-      }
-      .scroll-button {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-55%);
-        background-color: rgba(0, 0, 0, 0.5);
-        color: #fff;
-        border: none;
-        padding: 0.5rem;
-        cursor: pointer;
-        z-index: 10;
-        border-radius: 50px;
-        width: 4%;
-      }
-      .scroll-button:hover {
-        background-color: rgba(255, 255, 255, 0.5);
-        color: #000;
-      }
-  
-        .scroll-button.left {
-            left: 0;
-        }
-        .scroll-button.right {
-            right: 0;
-        }
+    }
+  /* Initially hide the full-text content */
+  .full-text {
+    display: none;
+  }
+
+  /* When 'Read More' is clicked, toggle the visibility */
+  .d-none {
+    display: none;
+  }       
 </style>
+
+
+<!-- Slider Promotion -->
+<div class="slideshow-container">
+  {% for promo in current_promotions %}
+  <div class="mySlides fade relative bg-cover bg-center h-[650px] rounded-lg shadow-lg" style="background: url('{{ promo.images.url }}') no-repeat center/cover; object-fit: cover; height:650px; width: 100%;">
+    <div class="numbertext">{{ forloop.counter }} / {{ current_promotions|length }}</div>
+    {% if promo.caption %}
+    <div class="text">{{ promo.caption }}</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+<br />
+<div style="text-align: center">
+  {% for promo in current_promotions %}
+  <span class="dot w-3 h-3 bg-gray-300 rounded-full hover:bg-gray-500 transition duration-300"></span>
+  {% endfor %}
+</div>
+<br />
+
 
 
 
@@ -91,8 +184,8 @@
 <div style="padding-bottom: 20px;"></div>
 <div class="container">
 <form method="post" enctype="multipart/form-data" id="order-form">
+  {% csrf_token %}
   <div class="row">
-    {% csrf_token %}
     {% for menu in all_menu %}
     <div class="col-md-3 course-item" data-category="{{ menu.category.id }}">
       <div class="card shadow-lg bg-dark rounded text-white">
@@ -127,6 +220,51 @@
     </div>
     {% endfor %}
   </div>
+
+  
+    <div class="text-start">
+      <h3>✨ เมนูใหม่ ✨</h3> 
+    </div>
+    
+
+  <div class="row">
+    {% for product in new_products %}
+    <div class="col-md-3 course-item" data-category="{{ product.category.id }}">
+      <div class="card shadow-lg bg-dark rounded text-white">
+        <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+        {% if product.images %}
+            <img src="{{ product.images.url }}"  class="img-b img-fluid" loading="lazy" style="height: 200px; width: 100%; object-fit: cover;"/>
+        {% else %}
+            <img src="{% static 'images/hero.png' %}"  class="img-b img-fluid" loading="lazy" />
+        {% endif %}
+        </div>
+        <div class="card-body text-start">
+          <div class="column text-start">
+            <span class="fa fa-tags" aria-hidden="true" style="font-size: 18px; font-weight: bold;"> {{ product.category.name }} </span>
+          </div>
+
+          <h6 class="card-title" style="font-size: 18px;"> 
+          {{ product.name }} - <strike class="card-title mb-2 text-white">ปกติ {{ product.price|floatformat:0 }} บาท</strike>
+          </h6>
+          <span>
+            <h6 class="card-subtitle mb-2 text-danger font-weight-bold" style="font-size: 18px; font-weight: bold;"> 
+              พิเศษ {{ product.price_discount|floatformat:0 }}บาท
+            
+              <input type="number" class="form-control-sm bg-black text-white menu-count" data-price=" {{ product.price_discount }}" name="count" value="1" style="width: 100px;" required>
+            </h6>
+          </span>  
+        
+          <input type="checkbox" class="menu-checkbox" name="menu" value="{{ product.id }}">
+        
+        </div>
+      </div>
+      <br>
+    </div>
+    {% endfor %}
+  </div>
+
+
+
   <div style="padding-top: 100px;"></div>
 
   <div class="text-right">
@@ -145,6 +283,30 @@
   </div>
 </form>
 </div>
+<!-- Slide -->
+<script>
+  let slideIndex = 0;
+  showSlides();
+
+  function showSlides() {
+    let i;
+    let slides = document.getElementsByClassName("mySlides");
+    let dots = document.getElementsByClassName("dot");
+    for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";
+    }
+    slideIndex++;
+    if (slideIndex > slides.length) {
+      slideIndex = 1;
+    }
+    for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+    }
+    slides[slideIndex - 1].style.display = "block";
+    dots[slideIndex - 1].className += " active";
+    setTimeout(showSlides, 3000); // Change image every 2 seconds
+  }
+</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

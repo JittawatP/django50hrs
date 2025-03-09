@@ -8,6 +8,7 @@ urlpatterns = [
 # path('',Sawatdee, name='home'),
 path('tables/',views.AllTable, name='all-table'),
 path('order/<int:table_id>/',views.OrderMenus, name='order-menu'),
+path('monthly-order-summary/',views.MonthlyOrderSummary, name='monthly-order-summary'),
 ]
 
 
