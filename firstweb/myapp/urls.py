@@ -34,7 +34,7 @@ urlpatterns = [
     # EP19
     path('orders/', CartOrderProduct , name='cart-order-product'),
     path('upload-slip/<str:order_id>/', UploadSlipOrder , name='upload-slip-order'),
-    path('customer-all-order/', CustomerAllOrder , name='-ordcustomer-aller'),  
+    path('customer-all-order/', CustomerAllOrder , name='customer-all-order'),  
     path('update-status/<str:order_id>/<str:status>/', UpdatePaid , name='update-status'),  
     path('update-tracking/<str:order_id>/', CartOrderUpdateTracking , name='cart-order-update-tracking'),      
     path('my-order/<str:order_id>/', MyOrder , name='my-order'),      
